@@ -1,0 +1,62 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          envcoord
+# Required-Start:    hostname $local_fs $syslog
+# Required-Stop:     hostname $local_fs $syslog
+# Should-Start:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: start the zope zerver for envcoord.health.fgov.be
+# Description:       start the zope zerver for envcoord.health.fgov.be
+### END INIT INFO
+
+RETVAL=0
+SUCMD='su -s /bin/bash zope -c'
+PREFIX='/var/local/groupware'
+INSTANCES_ZEO=("envcoord-1" "envcoord-2" "envcoord-3")
+
+start_all() {
+    $SUCMD "$PREFIX/bin/zeoserver start"
+    for name in "${INSTANCES_ZEO[@]}"; do
+        $SUCMD "$PREFIX/bin/$name start"
+    done
+    $SUCMD "$PREFIX/bin/haproxy -D -f $PREFIX/haproxy.cfg"
+}
+
+stop_all() {
+    $SUCMD "kill -9 `pidof haproxy`"
+    for name in "${INSTANCES_ZEO[@]}"; do
+        $SUCMD "$PREFIX/bin/$name stop"
+    done
+    $SUCMD "$PREFIX/bin/zeoserver stop"
+}
+
+status_all() {
+    echo -n "zeoserver: "
+    $PREFIX/bin/zeoserver status
+    for name in "${INSTANCES_ZEO[@]}"; do
+        echo -n "$name: "
+        $PREFIX/bin/$name status
+    done
+}
+
+case "$1" in
+  start)
+        start_all
+        ;;
+  stop)
+        stop_all
+        ;;
+  status)
+        status_all
+        ;;
+  restart)
+        stop_all
+        start_all
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|status|restart}"
+        RETVAL=1
+esac
+exit $RETVAL
