@@ -83,5 +83,8 @@ Python 2 Data.fs migration
     make migrate
 
 Defaults: ``INSTANCE=envcoord-1``,
-``DATAFS=var/storage/groupware/filestorage/Data.fs``. Then reindex the catalog
-from the ZMI: portal_catalog -> Advanced -> Update Catalog.
+``DATAFS=var/storage/groupware/filestorage/Data.fs``.
+The last step rebuilds every catalog and packs the database. To rebuild the
+catalogs again later (with ``zeoserver`` running for ZEO client instances)::
+
+    bin/envcoord-1 run src/naaya/buildout/Naaya/migration/migrate_zodb.py --reindex-only
