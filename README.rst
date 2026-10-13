@@ -9,9 +9,10 @@ from the ``python3`` branch of https://github.com/eaudeweb/naaya, checked out in
 Prerequisites
 -------------
 
-* Python 3 with the ``venv`` module
+* Python 3.9 or newer with the ``venv`` module (``setuptools`` 81 needs 3.9)
 * git, and access to github.com/eaudeweb/naaya
-* a C compiler (``build-essential`` on Debian), used to build haproxy
+* a C/C++ compiler with C++11 support (``build-essential`` on Debian), used
+  to build haproxy and the eggs without a matching wheel
 
 Installation
 ------------
@@ -30,6 +31,37 @@ Installation
     make install
 
 The LDAP dump reads its configuration from ``var/ldapdump/config.yaml``.
+
+CentOS 7
+--------
+
+CentOS 7 ships Python 3.6, gcc 4.8.5 and glibc 2.17, so Python is built from
+source and the eggs without a ``manylinux2014`` wheel (e.g. greenlet) are
+compiled with gcc 11 from ``devtoolset-11``.
+
+1. Point the repositories at the CentOS archive (``mirrorlist.centos.org`` is
+   gone since the end of life)::
+
+    sudo sed -i -e 's|^mirrorlist=|#mirrorlist=|' -e 's|^#\s*baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|' /etc/yum.repos.d/CentOS-*.repo
+
+2. Install the build dependencies and gcc 11 (run the ``sed`` from step 1
+   again after ``centos-release-scl``, for the SCLo repositories)::
+
+    sudo yum install -y gcc make openssl11-devel bzip2-devel libffi-devel zlib-devel xz-devel readline-devel sqlite-devel gdbm-devel ncurses-devel libuuid-devel openldap-devel cyrus-sasl-devel wget centos-release-scl
+    sudo yum install -y devtoolset-11-gcc devtoolset-11-gcc-c++
+
+3. Build Python 3.12 into ``/opt/python3.12`` against ``openssl11``::
+
+    wget https://www.python.org/ftp/python/3.12.11/Python-3.12.11.tgz
+    tar xzf Python-3.12.11.tgz && cd Python-3.12.11
+    sed -i 's/PKG_CONFIG openssl /PKG_CONFIG openssl11 /g' configure
+    ./configure --prefix=/opt/python3.12 --with-openssl-rpath=auto
+    make -j$(nproc) && sudo make altinstall
+
+4. Bootstrap with that Python and run buildout with gcc 11::
+
+    make bootstrap PYTHON=/opt/python3.12/bin/python3.12
+    scl enable devtoolset-11 -- make install
 
 Running
 -------
