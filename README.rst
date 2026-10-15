@@ -73,7 +73,13 @@ Running
     bin/haproxy -D -f haproxy.cfg
 
 haproxy listens on 127.0.0.1:8060 and balances the instances on ports
-8061-8063. ``init_envcoord`` is the init script used in production.
+8061-8063. In production they are started by the systemd unit
+``envcoord.service``, which assumes the buildout is in
+``/var/local/groupware``::
+
+    cp envcoord.service /etc/systemd/system/
+    systemctl daemon-reload
+    systemctl enable --now envcoord
 
 Python 2 Data.fs migration
 --------------------------

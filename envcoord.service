@@ -1,0 +1,26 @@
+[Unit]
+Description=Envcoord Zope (ZEO, envcoord-1..3, haproxy)
+After=network-online.target slapd.service postfix.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=zope
+Group=zope
+WorkingDirectory=/var/local/groupware
+ExecStart=/var/local/groupware/bin/zeoserver start
+ExecStart=/var/local/groupware/bin/envcoord-1 start
+ExecStart=/var/local/groupware/bin/envcoord-2 start
+ExecStart=/var/local/groupware/bin/envcoord-3 start
+ExecStart=/var/local/groupware/bin/haproxy -D -f /var/local/groupware/haproxy.cfg
+ExecStop=-/usr/bin/pkill -u zope -x haproxy
+ExecStop=/var/local/groupware/bin/envcoord-3 stop
+ExecStop=/var/local/groupware/bin/envcoord-2 stop
+ExecStop=/var/local/groupware/bin/envcoord-1 stop
+ExecStop=/var/local/groupware/bin/zeoserver stop
+TimeoutStartSec=300
+TimeoutStopSec=300
+
+[Install]
+WantedBy=multi-user.target
