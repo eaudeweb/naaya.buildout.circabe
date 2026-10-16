@@ -3,28 +3,28 @@ CIRCA Belgium buildout
 
 Zope 6 / Python 3 buildout for envcoord.health.fgov.be. Shared Naaya
 configuration (``base.cfg``, ``zope6-versions.cfg``, migration scripts) comes
-from the ``python3`` branch of https://github.com/eaudeweb/naaya, checked out in
-``src/naaya``.
+from https://github.com/eaudeweb/naaya.buildout.naaya, checked out in
+``src/naaya.buildout.naaya``.
 
 Prerequisites
 -------------
 
 * Python 3.9 or newer with the ``venv`` module (``setuptools`` 81 needs 3.9)
-* git, and access to github.com/eaudeweb/naaya
+* git, and access to github.com/eaudeweb/naaya.buildout.naaya
 * a C/C++ compiler with C++11 support (``build-essential`` on Debian), used
   to build haproxy and the eggs without a matching wheel
 
 Installation
 ------------
 
-1. Clone ``src/naaya`` and create the venv with ``zc.buildout`` and
-   ``setuptools`` from ``requirements.txt``::
+1. Clone ``src/naaya.buildout.naaya`` and create the venv with
+   ``zc.buildout`` and ``setuptools`` from ``requirements.txt``::
 
     make bootstrap
 
    Without SSH access to GitHub::
 
-    make bootstrap NAAYA_REPO=https://github.com/eaudeweb/naaya.git
+    make bootstrap NAAYA_REPO=https://github.com/eaudeweb/naaya.buildout.naaya.git
 
 2. Run buildout and add the Naaya ZCML overrides::
 
@@ -93,4 +93,4 @@ Defaults: ``INSTANCE=envcoord-1``,
 The last step rebuilds every catalog and packs the database. To rebuild the
 catalogs again later (with ``zeoserver`` running for ZEO client instances)::
 
-    bin/envcoord-1 run src/naaya/buildout/Naaya/migration/migrate_zodb.py --reindex-only
+    bin/envcoord-1 run src/naaya.buildout.naaya/migration/migrate_zodb.py --reindex-only
