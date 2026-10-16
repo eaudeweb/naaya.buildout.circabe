@@ -92,7 +92,7 @@ Python 2 Data.fs migration
     make migrate
 
 Defaults: ``INSTANCE=envcoord-1``,
-``DATAFS=var/storage/groupware/filestorage/Data.fs``.
+``DATAFS=var/filestorage/Data.fs``.
 The last step rebuilds every catalog and packs the database. To rebuild the
 catalogs again later (with ``zeoserver`` running for ZEO client instances)::
 

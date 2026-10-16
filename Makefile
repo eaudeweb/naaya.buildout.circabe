@@ -1,5 +1,5 @@
 INSTANCE ?= envcoord-1
-DATAFS ?= var/storage/groupware/filestorage/Data.fs
+DATAFS ?= var/filestorage/Data.fs
 NAAYA_BUILDOUT := src/naaya.buildout.naaya
 NAAYA_REPO ?= git@github.com:eaudeweb/naaya.buildout.naaya.git
 NAAYA_BRANCH ?= pip
