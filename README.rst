@@ -1,15 +1,16 @@
-CIRCA Belgium buildout
-======================
+CIRCA Belgium
+=============
 
-Zope 6 / Python 3 buildout for envcoord.health.fgov.be. Shared Naaya
-configuration (``base.cfg``, ``zope6-versions.cfg``, migration scripts) comes
-from https://github.com/eaudeweb/naaya.buildout.naaya, checked out in
-``src/naaya.buildout.naaya``.
+Zope 6 / Python 3 pip installation for envcoord.health.fgov.be, configured in
+``site.cfg`` (pins in ``versions.cfg``). The shared Naaya configuration
+(``base.cfg``, ``zope6-versions.cfg``, ``pip/``, migration scripts) comes from
+the ``pip`` branch of https://github.com/eaudeweb/naaya.buildout.naaya,
+checked out in ``src/naaya.buildout.naaya``.
 
 Prerequisites
 -------------
 
-* Python 3.9 or newer with the ``venv`` module (``setuptools`` 81 needs 3.9)
+* Python 3.12 with the ``venv`` module
 * git, and access to github.com/eaudeweb/naaya.buildout.naaya
 * a C/C++ compiler with C++11 support (``build-essential`` on Debian), used
   to build haproxy and the eggs without a matching wheel
@@ -17,8 +18,7 @@ Prerequisites
 Installation
 ------------
 
-1. Clone ``src/naaya.buildout.naaya`` and create the venv with
-   ``zc.buildout`` and ``setuptools`` from ``requirements.txt``::
+1. Clone ``src/naaya.buildout.naaya``::
 
     make bootstrap
 
@@ -26,9 +26,12 @@ Installation
 
     make bootstrap NAAYA_REPO=https://github.com/eaudeweb/naaya.buildout.naaya.git
 
-2. Run buildout and add the Naaya ZCML overrides::
+2. Create ``.venv``, install the packages, write the instance files
+   (``parts/``, ``bin/``) and build haproxy::
 
     make install
+
+   After a change in ``site.cfg``, ``make config`` rewrites the instance files.
 
 The LDAP dump reads its configuration from ``var/ldapdump/config.yaml``.
 
@@ -58,10 +61,10 @@ compiled with gcc 11 from ``devtoolset-11``.
     ./configure --prefix=/opt/python3.12 --with-openssl-rpath=auto
     make -j$(nproc) && sudo make altinstall
 
-4. Bootstrap with that Python and run buildout with gcc 11::
+4. Install with that Python and gcc 11::
 
-    make bootstrap PYTHON=/opt/python3.12/bin/python3.12
-    scl enable devtoolset-11 -- make install
+    make bootstrap
+    scl enable devtoolset-11 -- make install PYTHON=/opt/python3.12/bin/python3.12
 
 Running
 -------
